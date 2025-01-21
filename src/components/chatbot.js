@@ -6,7 +6,7 @@ const Chatbot = () => {
   const [input, setInput] = useState("");
 
   const openai = new OpenAI({
-    apiKey: "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",
+    apiKey: process.env.REACT_APP_OPENAI_API_KEY, 
   });
 
   const sendMessage = async () => {
