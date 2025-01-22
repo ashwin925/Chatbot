@@ -1,9 +1,9 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, Suspense } from "react"
 import { Canvas } from "@react-three/fiber"
-import { OrbitControls, Stars } from "@react-three/drei"
-import { AnimatePresence, motion } from "framer-motion"
-import ChatInterface from "./components/chat"
-import AnimatedBackground from "./components/animatedbg"
+import { EffectComposer, Bloom } from "@react-three/postprocessing"
+import { motion } from "framer-motion"
+import ChatInterface from "./ChatInterface"
+import ParticleSystem from "./ParticleSystem"
 import "./App.css"
 
 function App() {
@@ -50,25 +50,25 @@ function App() {
   return (
     <div className="app">
       <Canvas className="canvas-background">
-        <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
-        <Stars />
-        <AnimatedBackground />
+        <Suspense fallback={null}>
+          <ParticleSystem />
+          <EffectComposer>
+            <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} height={300} />
+          </EffectComposer>
+        </Suspense>
       </Canvas>
       <div className="content">
-        <AnimatePresence>
-          {messages.map((message, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -50 }}
-              transition={{ duration: 0.5 }}
-              className={`message ${message.role}`}
-            >
-              {message.content}
-            </motion.div>
-          ))}
-        </AnimatePresence>
+        {messages.map((message, index) => (
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className={`message ${message.role}`}
+          >
+            {message.content}
+          </motion.div>
+        ))}
         <div ref={messagesEndRef} />
       </div>
       <ChatInterface input={input} setInput={setInput} handleSubmit={handleSubmit} isLoading={isLoading} />
