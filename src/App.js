@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRive } from "@rive-app/react-canvas"
-import { useGSAP } from "@gsap/react";  // This is incorrect
-import { gsap } from 'gsap';
+import { gsap } from 'gsap';  // Correct GSAP import
 import Lenis from "@studio-freight/lenis"
 import Particles from "react-tsparticles"
 import { loadFull } from "tsparticles"
@@ -15,6 +14,7 @@ const App = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   useEffect(() => {
+    // Initialize Lenis smooth scrolling
     const lenis = new Lenis()
 
     function raf(time) {
@@ -25,13 +25,14 @@ const App = () => {
     requestAnimationFrame(raf)
   }, [])
 
-  useGSAP(() => {
+  useEffect(() => {
+    // Use GSAP animation to fade in the app container
     gsap.to(".app-container", {
       opacity: 1,
       duration: 1,
       ease: "power2.inOut",
     })
-  }, [])
+  }, [])  // This effect runs once when the component mounts
 
   const particlesInit = async (main) => {
     await loadFull(main)
@@ -129,4 +130,3 @@ const App = () => {
 }
 
 export default App
-
