@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useRive } from "@rive-app/react-canvas";
-import gsap from "gsap"; // Correct import
-import { ScrollTrigger } from "gsap/ScrollTrigger"; // Correct plugin import
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
 import Particles from "react-tsparticles";
 import { loadFull } from "tsparticles";
@@ -75,10 +74,15 @@ const App = () => {
         });
       },
     });
-  }, []); // Replace `useGSAP` with `useEffect`
+  }, []);
 
   const particlesInit = useCallback(async (engine) => {
-    await loadFull(engine);
+    console.log(engine); // Debugging the engine
+    try {
+      await loadFull(engine); // Properly load tsparticles features
+    } catch (error) {
+      console.error("Error initializing tsparticles:", error);
+    }
   }, []);
 
   return (
