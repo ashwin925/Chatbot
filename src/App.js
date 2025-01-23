@@ -1,24 +1,25 @@
-import React, { useState, useEffect, useRef, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useRive } from "@rive-app/react-canvas"
-import { useGSAP } from "@gsap/react"
-import gsap from "gsap"
-import { ScrollTrigger } from "gsap/ScrollTrigger"
-import Lenis from "@studio-freight/lenis"
-import Particles from "react-tsparticles"
-import { loadFull } from "tsparticles"
-import Sidebar from "./components/sidebar"
-import ChatBot from "./components/chatbot"
-import ThemeToggle from "./components/theme"
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useRive } from "@rive-app/react-canvas";
+import gsap from "gsap"; // Correct import
+import { ScrollTrigger } from "gsap/ScrollTrigger"; // Correct plugin import
+import Lenis from "@studio-freight/lenis";
+import Particles from "react-tsparticles";
+import { loadFull } from "tsparticles";
+import Sidebar from "./components/sidebar";
+import ChatBot from "./components/chatbot";
+import ThemeToggle from "./components/theme";
 
-gsap.registerPlugin(ScrollTrigger)
+// Register GSAP ScrollTrigger plugin
+gsap.registerPlugin(ScrollTrigger);
 
 const App = () => {
-  const [theme, setTheme] = useState("dark")
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const appRef = useRef(null)
+  const [theme, setTheme] = useState("dark");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const appRef = useRef(null);
 
   useEffect(() => {
+    // Initialize Lenis smooth scrolling
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -29,34 +30,39 @@ const App = () => {
       smoothTouch: false,
       touchMultiplier: 2,
       infinite: false,
-    })
+    });
 
     function raf(time) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
+      lenis.raf(time);
+      requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf)
+    requestAnimationFrame(raf);
 
     return () => {
-      lenis.destroy()
-    }
-  }, [])
+      lenis.destroy();
+    };
+  }, []);
 
-  useGSAP(() => {
-    const tl = gsap.timeline()
+  useEffect(() => {
+    // GSAP animations for app container and floating elements
+    const tl = gsap.timeline();
 
     tl.from(".app-container", {
       opacity: 0,
       duration: 1,
       ease: "power2.inOut",
-    }).from(".floating-element", {
-      y: 100,
-      opacity: 0,
-      stagger: 0.2,
-      duration: 1,
-      ease: "back.out(1.7)",
-    })
+    }).from(
+      ".floating-element",
+      {
+        y: 100,
+        opacity: 0,
+        stagger: 0.2,
+        duration: 1,
+        ease: "back.out(1.7)",
+      },
+      "<"
+    );
 
     ScrollTrigger.create({
       trigger: ".app-container",
@@ -66,14 +72,14 @@ const App = () => {
         gsap.to(".parallax-bg", {
           y: self.progress * 100,
           ease: "none",
-        })
+        });
       },
-    })
-  }, [])
+    });
+  }, []); // Replace `useGSAP` with `useEffect`
 
   const particlesInit = useCallback(async (engine) => {
-    await loadFull(engine)
-  }, [])
+    await loadFull(engine);
+  }, []);
 
   return (
     <div
@@ -180,8 +186,7 @@ const App = () => {
       <ThemeToggle theme={theme} setTheme={setTheme} />
       <ChatBot theme={theme} setIsSidebarOpen={setIsSidebarOpen} />
     </div>
-  )
-}
+  );
+};
 
-export default App
-
+export default App;
