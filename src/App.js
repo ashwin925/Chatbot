@@ -1,77 +1,129 @@
-import React, { useState, useRef, Suspense } from "react"
-import { Canvas } from "@react-three/fiber"
-import { EffectComposer, Bloom } from "@react-three/postprocessing"
-import { motion } from "framer-motion"
-import ChatInterface from "./components/chat"
-import ParticleSystem from "./components/particle"
-import "./App.css"
+import React, { useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { useRive } from "@rive-app/react-canvas"
+import { useGSAP } from "@gsap/react"
+import gsap from "gsap"
+import Lenis from "@studio-freight/lenis"
+import Particles from "react-tsparticles"
+import { loadFull } from "tsparticles"
+import Sidebar from "./components/sidebar"
+import ChatBot from "./components/chatbot"
+import ThemeToggle from "./components/theme"
 
-function App() {
-  const [messages, setMessages] = useState([])
-  const [input, setInput] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const messagesEndRef = useRef(null)
+const App = () => {
+  const [theme, setTheme] = useState("dark")
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
-    if (!input.trim()) return
+  useEffect(() => {
+    const lenis = new Lenis()
 
-    const userMessage = { role: "user", content: input }
-    setMessages((prevMessages) => [...prevMessages, userMessage])
-    setInput("")
-    setIsLoading(true)
-
-    try {
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ messages: [...messages, userMessage] }),
-      })
-
-      if (!response.ok) {
-        throw new Error("Failed to get response from API")
-      }
-
-      const data = await response.json()
-      setMessages((prevMessages) => [...prevMessages, { role: "assistant", content: data.message }])
-    } catch (error) {
-      console.error("Error:", error)
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { role: "assistant", content: "Sorry, I encountered an error. Please try again." },
-      ])
-    } finally {
-      setIsLoading(false)
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
     }
+
+    requestAnimationFrame(raf)
+  }, [])
+
+  useGSAP(() => {
+    gsap.to(".app-container", {
+      opacity: 1,
+      duration: 1,
+      ease: "power2.inOut",
+    })
+  }, [])
+
+  const particlesInit = async (main) => {
+    await loadFull(main)
   }
 
   return (
-    <div className="app">
-      <Canvas className="canvas-background">
-        <Suspense fallback={null}>
-          <ParticleSystem />
-          <EffectComposer>
-            <Bloom luminanceThreshold={0.3} luminanceSmoothing={0.9} height={300} />
-          </EffectComposer>
-        </Suspense>
-      </Canvas>
-      <div className="content">
-        {messages.map((message, index) => (
+    <div
+      className={`app-container ${theme}`}
+      style={{
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        fontFamily: '"Roboto", sans-serif',
+        transition: "background-color 0.3s ease",
+        backgroundColor: theme === "dark" ? "#1a1a1a" : "#ffffff",
+        color: theme === "dark" ? "#ffffff" : "#1a1a1a",
+      }}
+    >
+      <Particles
+        id="tsparticles"
+        init={particlesInit}
+        options={{
+          background: {
+            color: {
+              value: theme === "dark" ? "#000000" : "#ffffff",
+            },
+          },
+          fpsLimit: 120,
+          particles: {
+            color: {
+              value: theme === "dark" ? "#ffffff" : "#000000",
+            },
+            links: {
+              color: theme === "dark" ? "#ffffff" : "#000000",
+              distance: 150,
+              enable: true,
+              opacity: 0.5,
+              width: 1,
+            },
+            move: {
+              direction: "none",
+              enable: true,
+              outModes: {
+                default: "bounce",
+              },
+              random: false,
+              speed: 1,
+              straight: false,
+            },
+            number: {
+              density: {
+                enable: true,
+                area: 800,
+              },
+              value: 80,
+            },
+            opacity: {
+              value: 0.5,
+            },
+            shape: {
+              type: "circle",
+            },
+            size: {
+              value: { min: 1, max: 5 },
+            },
+          },
+          detectRetina: true,
+        }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: -1,
+        }}
+      />
+      <AnimatePresence>
+        {isSidebarOpen && (
           <motion.div
-            key={index}
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className={`message ${message.role}`}
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
           >
-            {message.content}
+            <Sidebar theme={theme} />
           </motion.div>
-        ))}
-        <div ref={messagesEndRef} />
-      </div>
-      <ChatInterface input={input} setInput={setInput} handleSubmit={handleSubmit} isLoading={isLoading} />
+        )}
+      </AnimatePresence>
+      <ThemeToggle theme={theme} setTheme={setTheme} />
+      <ChatBot theme={theme} setIsSidebarOpen={setIsSidebarOpen} />
     </div>
   )
 }
