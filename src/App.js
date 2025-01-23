@@ -1,21 +1,35 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRive } from "@rive-app/react-canvas"
-import { gsap } from 'gsap';  // Correct GSAP import
+import { useGSAP } from "@gsap/react"
+import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Lenis from "@studio-freight/lenis"
 import Particles from "react-tsparticles"
 import { loadFull } from "tsparticles"
-import Sidebar from "./components/sidebar"
-import ChatBot from "./components/chatbot"
-import ThemeToggle from "./components/theme"
+import Sidebar from "./components/Sidebar"
+import ChatBot from "./components/ChatBot"
+import ThemeToggle from "./components/ThemeToggle"
+
+gsap.registerPlugin(ScrollTrigger)
 
 const App = () => {
   const [theme, setTheme] = useState("dark")
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const appRef = useRef(null)
 
   useEffect(() => {
-    // Initialize Lenis smooth scrolling
-    const lenis = new Lenis()
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      direction: "vertical",
+      gestureDirection: "vertical",
+      smooth: true,
+      mouseMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    })
 
     function raf(time) {
       lenis.raf(time)
@@ -23,23 +37,47 @@ const App = () => {
     }
 
     requestAnimationFrame(raf)
+
+    return () => {
+      lenis.destroy()
+    }
   }, [])
 
-  useEffect(() => {
-    // Use GSAP animation to fade in the app container
-    gsap.to(".app-container", {
-      opacity: 1,
+  useGSAP(() => {
+    const tl = gsap.timeline()
+
+    tl.from(".app-container", {
+      opacity: 0,
       duration: 1,
       ease: "power2.inOut",
+    }).from(".floating-element", {
+      y: 100,
+      opacity: 0,
+      stagger: 0.2,
+      duration: 1,
+      ease: "back.out(1.7)",
     })
-  }, [])  // This effect runs once when the component mounts
 
-  const particlesInit = async (main) => {
-    await loadFull(main)
-  }
+    ScrollTrigger.create({
+      trigger: ".app-container",
+      start: "top top",
+      end: "bottom bottom",
+      onUpdate: (self) => {
+        gsap.to(".parallax-bg", {
+          y: self.progress * 100,
+          ease: "none",
+        })
+      },
+    })
+  }, [])
+
+  const particlesInit = useCallback(async (engine) => {
+    await loadFull(engine)
+  }, [])
 
   return (
     <div
+      ref={appRef}
       className={`app-container ${theme}`}
       style={{
         minHeight: "100vh",
@@ -50,15 +88,31 @@ const App = () => {
         transition: "background-color 0.3s ease",
         backgroundColor: theme === "dark" ? "#1a1a1a" : "#ffffff",
         color: theme === "dark" ? "#ffffff" : "#1a1a1a",
+        overflow: "hidden",
+        position: "relative",
       }}
     >
+      <div
+        className="parallax-bg"
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "120%",
+          backgroundImage: `url(${theme === "dark" ? "/dark-bg.jpg" : "/light-bg.jpg"})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: -1,
+        }}
+      />
       <Particles
         id="tsparticles"
         init={particlesInit}
         options={{
           background: {
             color: {
-              value: theme === "dark" ? "#000000" : "#ffffff",
+              value: "transparent",
             },
           },
           fpsLimit: 120,
@@ -108,7 +162,7 @@ const App = () => {
           left: 0,
           width: "100%",
           height: "100%",
-          zIndex: -1,
+          zIndex: 0,
         }}
       />
       <AnimatePresence>
@@ -130,3 +184,4 @@ const App = () => {
 }
 
 export default App
+
