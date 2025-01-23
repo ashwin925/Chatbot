@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRive } from "@rive-app/react-canvas"
-import { useGSAP } from "@gsap/react"
+import { useGSAP } from "@gsap/react";  // This is incorrect
 import { gsap } from 'gsap';
 import Lenis from "@studio-freight/lenis"
 import Particles from "react-tsparticles"
