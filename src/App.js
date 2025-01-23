@@ -2,8 +2,8 @@ import React, { useState, useRef, Suspense } from "react"
 import { Canvas } from "@react-three/fiber"
 import { EffectComposer, Bloom } from "@react-three/postprocessing"
 import { motion } from "framer-motion"
-import ChatInterface from "./ChatInterface"
-import ParticleSystem from "./ParticleSystem"
+import ChatInterface from "./components/chat"
+import ParticleSystem from "./components/particle"
 import "./App.css"
 
 function App() {
