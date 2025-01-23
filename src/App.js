@@ -7,9 +7,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Lenis from "@studio-freight/lenis"
 import Particles from "react-tsparticles"
 import { loadFull } from "tsparticles"
-import Sidebar from "./components/Sidebar"
-import ChatBot from "./components/ChatBot"
-import ThemeToggle from "./components/ThemeToggle"
+import Sidebar from "./components/sidebar"
+import ChatBot from "./components/chatbot"
+import ThemeToggle from "./components/theme"
 
 gsap.registerPlugin(ScrollTrigger)
 
