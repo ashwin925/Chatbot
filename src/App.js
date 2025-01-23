@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRive } from "@rive-app/react-canvas"
 import { useGSAP } from "@gsap/react"
-import gsap from "gsap"
+import { gsap } from 'gsap';
 import Lenis from "@studio-freight/lenis"
 import Particles from "react-tsparticles"
 import { loadFull } from "tsparticles"
