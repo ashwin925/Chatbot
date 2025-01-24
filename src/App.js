@@ -9,8 +9,8 @@ import Sidebar from "./components/Sidebar"
 import ChatArea from "./components/ChatArea"
 import Suggestions from "./components/Suggestions"
 import BackgroundScene from "./components/BackgroundScene"
+import BackgroundImage from "./components/BackgroundImage"
 import animationData from "./assets/cool-logo.json"
-import backgroundImage from "./assets/background.jpg"
 
 import "./App.css"
 
@@ -30,7 +30,8 @@ const App = () => {
   }
 
   return (
-    <Parallax blur={10} bgImage={backgroundImage} strength={500}>
+    <Parallax strength={500}>
+      <BackgroundImage />
       <div className="app-container">
         <Canvas>
           <BackgroundScene />
