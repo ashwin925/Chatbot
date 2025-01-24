@@ -1,196 +1,58 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Lenis from "@studio-freight/lenis";
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import Sidebar from "./components/sidebar";
-import ChatBot from "./components/chatbot";
-import ThemeToggle from "./components/theme";
+import React, { useState, useEffect } from "react"
+import { motion } from "framer-motion"
+import { Canvas } from "@react-three/fiber"
+import { useSpring, animated } from "react-spring"
+import { gsap } from "gsap"
+import Lottie from "lottie-react"
+import { Parallax } from "react-parallax"
+import Sidebar from "./components/Sidebar"
+import ChatArea from "./components/ChatArea"
+import Suggestions from "./components/Suggestions"
+import BackgroundScene from "./components/BackgroundScene"
+import animationData from "./assets/cool-logo.json"
+import backgroundImage from "./assets/background.jpg"
 
-// Register GSAP ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger);
+import "./App.css"
 
 const App = () => {
-  const [theme, setTheme] = useState("dark");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const appRef = useRef(null);
+  const [conversations, setConversations] = useState([])
+  const [currentChat, setCurrentChat] = useState([])
 
   useEffect(() => {
-    // Initialize Lenis smooth scrolling
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: "vertical",
-      gestureDirection: "vertical",
-      smooth: true,
-      mouseMultiplier: 1,
-      smoothTouch: false,
-      touchMultiplier: 2,
-      infinite: false,
-    });
+    // Initialize GSAP animations
+    gsap.from(".app-container", { opacity: 0, duration: 1, ease: "power2.inOut" })
+  }, [])
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-
-    requestAnimationFrame(raf);
-
-    return () => {
-      lenis.destroy();
-    };
-  }, []);
-
-  useEffect(() => {
-    // GSAP animations for app container and floating elements
-    const tl = gsap.timeline();
-
-    tl.from(".app-container", {
-      opacity: 0,
-      duration: 1,
-      ease: "power2.inOut",
-    }).from(
-      ".floating-element",
-      {
-        y: 100,
-        opacity: 0,
-        stagger: 0.2,
-        duration: 1,
-        ease: "back.out(1.7)",
-      },
-      "<"
-    );
-
-    ScrollTrigger.create({
-      trigger: ".app-container",
-      start: "top top",
-      end: "bottom bottom",
-      onUpdate: (self) => {
-        gsap.to(".parallax-bg", {
-          y: self.progress * 100,
-          ease: "none",
-        });
-      },
-    });
-  }, []);
-
-  const particlesInit = useCallback(async (engine) => {
-    console.log(engine); // Debugging the engine
-    try {
-      await loadFull(engine); // Properly load tsparticles features
-    } catch (error) {
-      console.error("Error initializing tsparticles:", error);
-    }
-  }, []);
+  const handleNewMessage = async (message) => {
+    // TODO: Implement OpenAI API call here
+    const response = "This is a placeholder response from the chatbot."
+    setCurrentChat([...currentChat, { role: "user", content: message }, { role: "assistant", content: response }])
+  }
 
   return (
-    <div
-      ref={appRef}
-      className={`app-container ${theme}`}
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        fontFamily: '"Roboto", sans-serif',
-        transition: "background-color 0.3s ease",
-        backgroundColor: theme === "dark" ? "#1a1a1a" : "#ffffff",
-        color: theme === "dark" ? "#ffffff" : "#1a1a1a",
-        overflow: "hidden",
-        position: "relative",
-      }}
-    >
-      <div
-        className="parallax-bg"
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "120%",
-          backgroundImage: `url(${theme === "dark" ? "/dark-bg.jpg" : "/light-bg.jpg"})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          zIndex: -1,
-        }}
-      />
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          background: {
-            color: {
-              value: "transparent",
-            },
-          },
-          fpsLimit: 120,
-          particles: {
-            color: {
-              value: theme === "dark" ? "#ffffff" : "#000000",
-            },
-            links: {
-              color: theme === "dark" ? "#ffffff" : "#000000",
-              distance: 150,
-              enable: true,
-              opacity: 0.5,
-              width: 1,
-            },
-            move: {
-              direction: "none",
-              enable: true,
-              outModes: {
-                default: "bounce",
-              },
-              random: false,
-              speed: 1,
-              straight: false,
-            },
-            number: {
-              density: {
-                enable: true,
-                area: 800,
-              },
-              value: 80,
-            },
-            opacity: {
-              value: 0.5,
-            },
-            shape: {
-              type: "circle",
-            },
-            size: {
-              value: { min: 1, max: 5 },
-            },
-          },
-          detectRetina: true,
-        }}
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          zIndex: 0,
-        }}
-      />
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <motion.div
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          >
-            <Sidebar theme={theme} />
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <ThemeToggle theme={theme} setTheme={setTheme} />
-      <ChatBot theme={theme} setIsSidebarOpen={setIsSidebarOpen} />
-    </div>
-  );
-};
+    <Parallax blur={10} bgImage={backgroundImage} strength={500}>
+      <div className="app-container">
+        <Canvas>
+          <BackgroundScene />
+        </Canvas>
+        <div className="content-wrapper">
+          <Sidebar conversations={conversations} logo={<Lottie animationData={animationData} />} />
+          <main className="main-content">
+            <motion.h1 initial={{ opacity: 0, y: -50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+              Know more..... and more
+            </motion.h1>
+            <ChatArea
+              currentChat={currentChat}
+              onSendMessage={handleNewMessage}
+              logo={<Lottie animationData={animationData} />}
+            />
+            <Suggestions />
+          </main>
+        </div>
+      </div>
+    </Parallax>
+  )
+}
 
-export default App;
+export default App
+
