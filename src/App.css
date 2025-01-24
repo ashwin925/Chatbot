@@ -11,13 +11,14 @@ html {
   display: flex;
   height: 100vh;
   position: relative;
+  z-index: 1;
 }
 
 .content-wrapper {
   display: flex;
   width: 100%;
   height: 100%;
-  z-index: 1;
+  z-index: 2;
 }
 
 .sidebar {
@@ -27,6 +28,7 @@ html {
   padding: 20px;
   display: flex;
   flex-direction: column;
+  z-index: 3;
 }
 
 .logo-container {
@@ -64,6 +66,7 @@ html {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  z-index: 3;
 }
 
 h1 {
@@ -137,6 +140,7 @@ h1 {
   display: flex;
   justify-content: space-around;
   margin-top: 20px;
+  z-index: 3;
 }
 
 .suggestion {
@@ -152,6 +156,6 @@ canvas {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -1;
+  z-index: 0;
 }
 

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Canvas } from "@react-three/fiber"
-import { useSpring, animated } from '@react-spring/web';
+import { useSpring, animated } from "react-spring"
 import { gsap } from "gsap"
 import Lottie from "lottie-react"
-import { Parallax } from "react-parallax"
 import Sidebar from "./components/Sidebar"
 import ChatArea from "./components/ChatArea"
 import Suggestions from "./components/Suggestions"
@@ -30,10 +29,10 @@ const App = () => {
   }
 
   return (
-    <Parallax strength={500}>
+    <>
       <BackgroundImage />
       <div className="app-container">
-        <Canvas>
+        <Canvas style={{ position: "fixed", top: 0, left: 0, zIndex: 0 }}>
           <BackgroundScene />
         </Canvas>
         <div className="content-wrapper">
@@ -51,7 +50,7 @@ const App = () => {
           </main>
         </div>
       </div>
-    </Parallax>
+    </>
   )
 }
 
