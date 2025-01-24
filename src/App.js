@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Canvas } from "@react-three/fiber"
-import { useSpring, animated } from "react-spring"
+import { useSpring, animated } from '@react-spring/web';
 import { gsap } from "gsap"
 import Lottie from "lottie-react"
 import { Parallax } from "react-parallax"
