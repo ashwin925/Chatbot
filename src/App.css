@@ -8,13 +8,24 @@ html {
 }
 
 .app-container {
+  position: relative;
   display: flex;
   height: 100vh;
-  position: relative;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.background-canvas {
+  position: fixed !important;
+  top: 0;
+  left: 0;
+  width: 100% !important;
+  height: 100% !important;
   z-index: 1;
 }
 
 .content-wrapper {
+  position: relative;
   display: flex;
   width: 100%;
   height: 100%;
@@ -67,6 +78,7 @@ html {
   flex-direction: column;
   padding: 20px;
   z-index: 3;
+  overflow-y: auto;
 }
 
 h1 {
@@ -79,6 +91,13 @@ h1 {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
 }
 
 .chat-messages {
@@ -92,6 +111,7 @@ h1 {
   margin-bottom: 10px;
   border-radius: 10px;
   max-width: 70%;
+  word-wrap: break-word;
 }
 
 .message.user {
@@ -150,12 +170,5 @@ h1 {
   border-radius: 20px;
   cursor: pointer;
   color: white;
-}
-
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 0;
 }
 
