@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Canvas } from "@react-three/fiber"
-import { useSpring, animated } from "react-spring"
+import { useSpring, animated } from '@react-spring/web';
 import { gsap } from "gsap"
 import Lottie from "lottie-react"
 import Sidebar from "./components/Sidebar"
 import ChatArea from "./components/ChatArea"
 import Suggestions from "./components/Suggestions"
 import BackgroundScene from "./components/BackgroundScene"
-import BackgroundImage from "./components/BackgroundImage"
+// import BackgroundImage from "./components/BackgroundImage"
 import animationData from "./assets/cool-logo.json"
 
 import "./App.css"
@@ -30,7 +30,7 @@ const App = () => {
 
   return (
     <>
-      <BackgroundImage />
+      {/* <BackgroundImage /> */}
       <div className="app-container">
         <Canvas style={{ position: "fixed", top: 0, left: 0, zIndex: 0 }}>
           <BackgroundScene />
