@@ -1,6 +1,5 @@
 import React, { useState } from "react"
 import { motion } from "framer-motion"
-import { Parallax } from "react-parallax"
 import Sidebar from "./components/Sidebar"
 import ChatArea from "./components/ChatArea"
 import MessageInput from "./components/MessageInput"
@@ -26,25 +25,23 @@ const App = () => {
   }
 
   return (
-    <Parallax strength={500}>
-      <div className="app-container">
-        <BackgroundAnimation />
-        <Sidebar messages={messages} />
-        <main className="main-content">
-          <motion.h1
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="main-heading"
-          >
-            Know more..... and more
-          </motion.h1>
-          <ChatArea messages={messages} />
-          <MessageInput onNewMessage={handleNewMessage} />
-          <Suggestions onSuggestionClick={handleSuggestionClick} />
-        </main>
-      </div>
-    </Parallax>
+    <div className="app-container">
+      <BackgroundAnimation />
+      <Sidebar messages={messages} />
+      <main className="main-content">
+        <motion.h1
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="main-heading"
+        >
+          Know more..... and more
+        </motion.h1>
+        <ChatArea messages={messages} />
+        <MessageInput onNewMessage={handleNewMessage} />
+        <Suggestions onSuggestionClick={handleSuggestionClick} />
+      </main>
+    </div>
   )
 }
 
