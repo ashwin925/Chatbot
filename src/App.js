@@ -1,48 +1,42 @@
-import React, { useRef, useEffect } from "react"
-import * as THREE from "three"
-import { Canvas, useFrame } from "@react-three/fiber"
-import "./BackgroundAnimation.css"
+import React, { useState } from "react"
+import { motion } from "framer-motion"
+import { Parallax } from "react-parallax"
+import Sidebar from "./components/Sidebar"
+import ChatArea from "./components/ChatArea"
+import MessageInput from "./components/MessageInput"
+import Suggestions from "./components/Suggestions"
+import BackgroundAnimation from "./components/BackgroundAnimation"
+import "./App.css"
 
-const Particles = () => {
-  const mesh = useRef()
+const App = () => {
+  const [messages, setMessages] = useState([])
 
-  useFrame(() => {
-    mesh.current.rotation.x = mesh.current.rotation.y += 0.01
-  })
-
-  const particlesCount = 5000
-  const positions = new Float32Array(particlesCount * 3)
-
-  for (let i = 0; i < particlesCount; i++) {
-    positions[i * 3] = (Math.random() - 0.5) * 10
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 10
+  const handleNewMessage = (message, isUser) => {
+    setMessages([...messages, { text: message, isUser }])
   }
 
   return (
-    <points ref={mesh}>
-      <bufferGeometry>
-        <bufferAttribute
-          attachObject={["attributes", "position"]}
-          count={positions.length / 3}
-          array={positions}
-          itemSize={3}
-        />
-      </bufferGeometry>
-      <pointsMaterial color="#ffffff" size={0.015} sizeAttenuation />
-    </points>
+    <Parallax strength={500}>
+      <div className="app-container">
+        <BackgroundAnimation />
+        <Sidebar />
+        <main className="main-content">
+          <motion.h1
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="main-heading"
+          >
+            Know more..... and more
+          </motion.h1>
+          <ChatArea messages={messages} />
+          <MessageInput onNewMessage={handleNewMessage} />
+          <Suggestions onSuggestionClick={(suggestion) => handleNewMessage(suggestion, true)} />
+        </main>
+      </div>
+    </Parallax>
   )
 }
 
-const BackgroundAnimation = () => {
-  return (
-    <div className="background-animation">
-      <Canvas camera={{ position: [0, 0, 1] }}>
-        <Particles />
-      </Canvas>
-    </div>
-  )
-}
-
-export default BackgroundAnimation
+export default App
 
