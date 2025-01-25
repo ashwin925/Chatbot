@@ -41,4 +41,43 @@
   display: inline-block;
 }
 
+.message-input-container {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 25px;
+  padding: 0.5rem;
+  margin-top: 1rem;
+}
+
+.message-input {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
+.message-input:focus {
+  outline: none;
+}
+
+.send-button {
+  background: linear-gradient(45deg, #ff6b6b, #feca57);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.input-logo {
+  margin-left: 1rem;
+}
+
 
