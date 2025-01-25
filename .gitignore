@@ -1,17 +1,17 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+# Dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# Testing
 /coverage
 
-# production
+# Production
 /build
 
-# misc
+# Miscellaneous
 .DS_Store
 .env
 .env.local
@@ -33,17 +33,15 @@ package-lock.json
 yarn.lock
 
 # Ignore all files in src/components (custom rule)
-# Add this if you want to ignore the entire components folder
 /src/components/
 
-# Ignore specific types of files in components folder
+# Allow specific files in src/components (optional)
 /src/components/*.env
 /src/components/secretComponent.js
 /src/components/private-*.js
 
 # MacOS system files
 Thumbs.db
-.DS_Store
 
 # Logs
 logs
