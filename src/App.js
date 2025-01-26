@@ -47,7 +47,7 @@
 
 // export default App
 
-import MessageInput from "../components/message-input"
+import MessageInput from "./components/MessageInput";
 
 export default function ChatPage() {
   return (
